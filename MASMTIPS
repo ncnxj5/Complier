@@ -1,0 +1,272 @@
+Boom Language Transform Template
+==========================================
+;if condition
+
+?(<condition>){<contents>}!
+------------------------------------------
+	push edi
+
+	<condition>	;put the result in %eax
+
+	mov  edi,0
+	cmp  eax,edi
+	jge  L<label>
+
+	<contents>
+
+L<label>:
+	pop  edi
+
+------------------------------------------
+
+	<condition>	;put the result in %eax
+	.IF eax
+	<contents>
+	.ENDIF
+
+==========================================
+;array data access
+
+<arrary>[<num>]
+------------------------------------------
+	push ebx
+	push esi
+	mov  ebx,<arrary>
+	mov  esi,<num>
+	mov  eax, dword ptr [ebx + esi * 4]
+
+	pop  esi
+	pop  ebx
+==========================================
+;loop
+
+LOOP(<condition>){<contents>}!
+------------------------------------------
+	push edi
+L<label>:
+	<condition>	;put the result in %eax
+
+	mov  edi,0
+	cmp  eax,edi
+	jge  E<label>	;if the condition is <=0 then do not loop
+
+	<contents>
+
+	jmp L<label>
+E<label>:
+	pop  edi
+------------------------------------------
+	<condition>
+	.WHILE eax
+	<contents>
+	.ENDW
+------------------------------------------
+BOOM!
+
+.BREAK
+==========================================
+return
+
+RETURN <expression>!
+------------------------------------------
+	<expression>	;put the result in %eax
+	ret
+==========================================
+;function define
+
+DEF <name>(<type> <inut1>,<type> <input2>) AS <type> {<contents>}!
+------------------------------------------
+<name> proc <input1>,<input2>
+
+	<contents>
+
+    	ret
+<name> endp
+==========================================
+;function call
+
+<name>(<input1>,<input2>)!
+------------------------------------------
+	invoke <name>,<input1>,<input2>
+==========================================
+;static array
+
+DEF <name> AS NUM[<length>] {<num1>,<num2>,<num3>,...}!
+------------------------------------------
+.data
+	<name> dd <num1>,<num2>,<num3>,...
+	<name>length EQU $ -val
+.code
+==========================================
+NOT <num>
+------------------------------------------
+not eax
+and eax, 1
+==========================================
+<num1>AND<num2>
+------------------------------------------
+and eax,ebx
+==========================================
+<num1>OR<num2>
+------------------------------------------
+or eax,ebx
+==========================================
+
+USING MRMOVL
+
+------------------------------------------
+
+	mov edi, 2
+	push edi
+	mov eax,dword ptr [esp]
+	pop edi
+
+result: eax 2
+==========================================
+;A simple testcase
+;it means that the result esp-ebp is -8 
+;ebp-8=esp
+
+e.g.
+|____|___<ebp  0x1000a
+|____|
+|____|___<esp  0x10004
+|____|
+
+so if you push something
+
+it becames:
+
+|____|___<ebp  0x1000a
+|____|			___<ebp-4
+|____|			___<ebp-8
+|_XX_|___<esp  0x10000	___<ebp-12
+
+------------------------------------------
+main proc
+	mov eax, 0
+	mov edi, 4
+	mov cl,4
+
+;the part for push
+
+	push edi
+	;push edi
+
+	mov eax,esp
+	sub eax,ebp
+
+	;mov eax,dword ptr [esp]
+	mov eax,dword ptr [ebp-12]
+
+;the part for pop
+
+	;pop edi
+	pop edi
+
+	invoke crt_printf, addr szFmt, eax
+	invoke crt_scanf
+    ret
+main endp
+
+end main
+==========================================
+About Print LINK TO THE LIBC printf
+
+PRINT("%d|",<NUM>)
+PRINT("<FORMAT>",<NUM>)
+
+------------------------------------------
+.data
+	<szFmt> db '<FORMAT>', 0
+
+.code
+	invoke crt_printf, addr <szFmt>, <NUM>
+
+==========================================
+ABOUT LOCAL VARIABLE
+
+------------------------------------------
+<name> proc
+	LOCAL var1:DWORD,var2:DWORD
+	LOCAL var3[4]:DWORD		;arrary
+	...
+<name> endp
+==========================================
+|					||
+|ABOUT FLOAT				||
+|					||
+==========================================
+Global Defination
+.data
+	m1 real8 1.0
+	m2 real4 2.0
+
+------------------------------------------
+using a stack to caculate
+
+fadd st(1), st 	; Add second position to first -
+		; result goes in second position
+fadd st, st(2) 	; Add first position to third -
+		; result goes in first position
+fxch st(1) 	; Exchange first and second positions
+------------------------------------------
+|___ST__|___< Stack Top
+|_st(1)_|
+|_st(2)_|
+|_st(3)_|
+------------------------------------------
+FADD 	Adds the source and destination
+FSUB 	Subtracts the source from the destination
+FSUBR	Subtracts the destination from the source
+FMUL 	Multiplies the source and the destination
+FDIV 	Divides the destination by the source
+FDIVR 	Divides the source by the destination
+
+FABS 	Sets the sign of ST to positive
+FCHS 	Reverses the sign of ST
+FRNDINT Rounds ST to an integer
+FSQRT 	Replaces the contents of ST with its square root
+FSCALE 	Multiplies the stack-top value by 2 to the power contained in ST(1)
+FPREM 	Calculates the remainder of ST divided by ST(1)
+------------------------------------------
+
+------------------------------------------
+STEP1:
+Local Varable
+.data
+	m1 real8 1.0
+	m2 real8 2.0
+.code
+xxx proc
+	LOCAL f1:REAL8,f2:REAL8
+	finit			;init the float stack
+	fld 	m1
+	fstp	f1		;let f1=1.0
+	fld 	m2
+	fstp	f2		;let f2=2.0
+
+------------------------------------------
+STEP2:
+	fld	f5
+	fld	f4
+	fld	f3
+	fld	f2
+	fld	f1
+	;push the float variable in REVERSE order
+
+STEP3:
+	faddp	;add and pop (f1+f2)
+	faddp	;(f1+f2)+f3
+	fmulp	;((f1+f2)+f3)*f4
+	fsubp	;(f5-((f1+f2)+f3)*f4))
+
+	;caculate
+
+STEP4:
+	fstp f1
+	;get result
+
+------------------------------------------
+------------------------------------------
+example: f1>f2
