@@ -1,0 +1,36 @@
+#########################################################
+#		mblue5 2015/12/17			                              #
+#							                                          #
+#########################################################
+DEF array AS NUM[10] {34,65,12,43,67,5,78,10,3,70}!
+DEF len AS NUM!
+
+DEF quicksort(NUM[] s,NUM l,NUM r) AS NUM{
+	?(l<r)
+	{
+		DEF i AS NUM!
+		LET i AS l!
+		DEF j AS NUM!
+		LET j AS r!
+		DEF x AS NUM!
+		LET x AS s[l]!
+		LOOP(i<j){
+			LOOP(i<jANDs[j]>=x){LET j AS j-1!}!
+			?(i<j){LET s[i] AS s[j]! LET i AS i+1!}!
+			LOOP(i<jANDs[i]< x){LET i AS i+1!}!
+			?(i<j){LET s[j] AS s[i]! LET j AS j-1!}!
+		}!
+		LET s[i] AS x!
+		quicksort(s, l, i - 1)!
+		quicksort(s, i + 1, r)!
+	}!
+	RETURN 0!
+}!
+
+DEF main() AS NUM{
+	LET len AS 10!
+	quicksort(array,0,len-1)!
+	RETURN 0!
+}!
+
+BOOM!
