@@ -1,22 +1,30 @@
 Boom Language Transform Template
 ==========================================
+.data
+	numFmt db '%d',0
+	chaFmt db '%c',0
+	floFmt db '%f',0
+	spaFmt db ' ',0
+	FLOAT_TEMP dd 0
+
+==========================================
 ;if condition
 
 ?(<condition>){<contents>}!
 ------------------------------------------
-	push edi
-
-	<condition>	;put the result in %eax
-
-	mov  edi,0
-	cmp  eax,edi
-	jge  L<label>
-
-	<contents>
-
-L<label>:
-	pop  edi
-
+;	push edi
+;
+;	<condition>	;put the result in %eax
+;
+;	mov  edi,0
+;	cmp  eax,edi
+;	jge  L<label>
+;
+;	<contents>
+;
+;L<label>:
+;	pop  edi
+;
 ------------------------------------------
 
 	<condition>	;put the result in %eax
@@ -27,38 +35,44 @@ L<label>:
 ==========================================
 ;array data access
 
-<arrary>[<num>]
+<array>[<num>]
 ------------------------------------------
-	push ebx
-	push esi
-	mov  ebx,<arrary>
-	mov  esi,<num>
-	mov  eax, dword ptr [ebx + esi * 4]
-
-	pop  esi
-	pop  ebx
+;	push ebx
+;	push esi
+;	mov  ebx,<array>
+;	mov  esi,<num>
+;	mov  eax, dword ptr [ebx + esi * 4]
+;
+;	pop  esi
+;	pop  ebx
+------------------------------------------
+	LOCAL <array>[<num>]:DWORD
+	...
+	<array>[<num>]
+	;when use
 ==========================================
 ;loop
 
 LOOP(<condition>){<contents>}!
 ------------------------------------------
-	push edi
-L<label>:
-	<condition>	;put the result in %eax
-
-	mov  edi,0
-	cmp  eax,edi
-	jge  E<label>	;if the condition is <=0 then do not loop
-
-	<contents>
-
-	jmp L<label>
-E<label>:
-	pop  edi
+;	push edi
+;L<label>:
+;	<condition>	;put the result in %eax
+;
+;	mov  edi,0
+;	cmp  eax,edi
+;	jge  E<label>	;if the condition is <=0 then do not loop
+;
+;	<contents>
+;
+;	jmp L<label>
+;E<label>:
+;	pop  edi
 ------------------------------------------
 	<condition>
 	.WHILE eax
 	<contents>
+	<condition>
 	.ENDW
 ------------------------------------------
 BOOM!
@@ -76,12 +90,13 @@ RETURN <expression>!
 
 DEF <name>(<type> <inut1>,<type> <input2>) AS <type> {<contents>}!
 ------------------------------------------
-<name> proc <input1>,<input2>
+<name> proc <input1>,<input2>,<input3(float)>:REAL8	;if the parameter is float then should add more
 
 	<contents>
 
     	ret
 <name> endp
+
 ==========================================
 ;function call
 
@@ -95,7 +110,7 @@ DEF <name> AS NUM[<length>] {<num1>,<num2>,<num3>,...}!
 ------------------------------------------
 .data
 	<name> dd <num1>,<num2>,<num3>,...
-	<name>length EQU $ -val
+	;<name>length EQU $ -val
 .code
 ==========================================
 NOT <num>
@@ -171,6 +186,52 @@ main endp
 
 end main
 ==========================================
+About Print Functions
+------------------------------------------
+DEF a1 AS NUM!
+LET a1 AS ...!
+...
+PRINT(a1)!
+------------------------------------------
+invoke print_num,a1
+==========================================
+DEF f1 AS FLOAT!
+LET...!
+...
+PRINT(f1)
+------------------------------------------
+invoke print_flo,f1
+------------------------------------------
+[Warning] In this place f1 can only be the local variable with REAL4 REAL8... 
+==========================================
+DEF a1 AS CHAR!
+LET...!
+...
+PRINT(a1)!
+------------------------------------------
+invoke print_cha,a1
+==========================================
+print_space proc
+	invoke crt_printf, addr spaFmt
+	ret
+print_space endp
+
+print_num proc num
+	invoke crt_printf, addr numFmt, num
+	ret
+print_num endp
+
+print_cha proc char
+	invoke crt_printf, addr chaFmt, char
+	ret
+print_cha endp
+
+print_flo proc float
+	invoke crt_printf, addr floFmt, float
+	ret
+print_flo endp
+
+------------------------------------------
 About Print LINK TO THE LIBC printf
 
 PRINT("%d|",<NUM>)
@@ -268,5 +329,102 @@ STEP4:
 	;get result
 
 ------------------------------------------
+==========================================
+About Float To NUM
+==========================================
+DEF f AS FLOAT
+DEF n AS NUM
+LET n AS f
+------------------------------------------
+.data
+	FLOAT_TEMP dd 0
+...
+.code
+...
+	LOCAL f:REAL8,n:DWORD
+...
+	push eax
+	finit
+	fld	f
+	fistp	FLOAT_TEMP
+	mov eax,FLOAT_TEMP
+	mov n,eax
+	pop eax
+...
+[WARNNING] this place use eax
+==========================================
+About NUM To Float
+==========================================
+DEF f AS FLOAT
+DEF n AS NUM
+LET f AS n
+------------------------------------------
+.data
+	FLOAT_TEMP dd 0
+...
+.code
+...
+	LOCAL f:REAL8,n:DWORD
+...
+	push eax
+	mov eax,n
+	mov FLOAT_TEMP,eax
+	
+	finit
+	fild	FLOAT_TEMP
+	fstp	f
+	
+	pop eax
+...
+[WARNNING] this place use eax
 ------------------------------------------
 example: f1>f2
+
+==========================================
+TIPS:
+MASM in CMD
+------------------------------------------
+;ml /c /coff a.asm
+;link /subsystem:windows a.obj
+------------------------------------------
+.386 
+.model flat,stdcall 
+option casemap:none 
+
+include e:\masm32\include\windows.inc 
+include e:\masm32\include\user32.inc 
+includelib e:\masm32\lib\user32.lib 
+include e:\masm32\include\kernel32.inc 
+includelib e:\masm32\lib\kernel32.lib
+ 
+.data 
+szCaption db 'A MessageBox',0 
+szText db 'Hello!',0 
+ 
+.code 
+start: 
+  invoke MessageBox,NULL,offset szText,offset szCaption,MB_OK 
+  invoke ExitProcess,NULL 
+end start
+------------------------------------------
+ml /c /coff a.asm
+link /subsystem:console a.obj
+------------------------------------------
+.386 
+.model flat, stdcall
+
+include  e:\masm32\include\msvcrt.inc
+includelib e:\masm32\lib\msvcrt.lib
+.data
+	szFmt db 'HelloWorld -1:%d| ', 0
+.code
+main proc
+	mov eax,-1
+	invoke crt_printf, addr szFmt, eax
+	invoke crt_scanf
+    ret
+main endp
+
+end main
+==========================================
+
