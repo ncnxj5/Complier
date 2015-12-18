@@ -378,8 +378,61 @@ LET f AS n
 ...
 [WARNNING] this place use eax
 ------------------------------------------
+example: f1>=f2
+input local variable f1,f2
+return 0 or 1 in eax
+------------------------------------------
+	mov eax,0
+	fld	f2
+	fld	f1
+	fcomi st(0),st(1)
+	jc <label>
+	mov eax,1
+<label>:
+	finit
+------------------------------------------
+example: f1<=f2
+input local variable f1,f2
+return 0 or 1 in eax
+------------------------------------------
+	mov eax,0
+	fld	f1
+	fld	f2
+	fcomi st(0),st(1)
+	jc <label>
+	mov eax,1
+<label>:
+	finit
+------------------------------------------
 example: f1>f2
-
+input local variable f1,f2
+return 0 or 1 in eax
+------------------------------------------
+	mov eax,0
+	fld	f1
+	fld	f2
+	fcomi st(0),st(1)
+	jc <label>
+	mov eax,1
+<label>:
+	finit
+	not eax
+	and eax, 1
+------------------------------------------
+example: f1<f2
+input local variable f1,f2
+return 0 or 1 in eax
+------------------------------------------
+	mov eax,0
+	fld	f2
+	fld	f1
+	fcomi st(0),st(1)
+	jc <label>
+	mov eax,1
+<label>:
+	finit
+	not eax
+	and eax, 1
 ==========================================
 TIPS:
 MASM in CMD
@@ -427,4 +480,3 @@ main endp
 
 end main
 ==========================================
-
