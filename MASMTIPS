@@ -48,8 +48,12 @@ Boom Language Transform Template
 ------------------------------------------
 	LOCAL <array>[<num>]:DWORD
 	...
-	<array>[<num>]
+	<array>[4*<num>]
 	;when use
+------------------------------------------
+	LOCAL <floatarray>[<length>]:REAL8
+	...
+	<array>[8*<num>]
 ==========================================
 ;loop
 
@@ -107,11 +111,18 @@ DEF <name>(<type> <inut1>,<type> <input2>) AS <type> {<contents>}!
 ;static array
 
 DEF <name> AS NUM[<length>] {<num1>,<num2>,<num3>,...}!
+DEF <floatname> AS FLOAT[<floatlength>] {<floatnum1>,<floatnum2>,<floatnum3>,...}!
 ------------------------------------------
 .data
 	<name> dd <num1>,<num2>,<num3>,...
-	;<name>length EQU $ -val
+	;<<name>length> EQU $ -<name>
+	<name> dd <num1>,<num2>,<num3>,...
+	<floatname> REAL8 <floatnum1>,<floatnum2>,<floatnum3>...	
 .code
+------------------------------------------
+[warning] that <floatnum>nust be in the float fomat 
+e.g. 	1.0 cannot be written by 1
+	0.0 cannot be written by 0
 ==========================================
 NOT <num>
 ------------------------------------------
@@ -386,9 +397,9 @@ return 0 or 1 in eax
 	fld	f2
 	fld	f1
 	fcomi st(0),st(1)
-	jc <label>
+	jc @F
 	mov eax,1
-<label>:
+@@:
 	finit
 ------------------------------------------
 example: f1<=f2
@@ -399,9 +410,9 @@ return 0 or 1 in eax
 	fld	f1
 	fld	f2
 	fcomi st(0),st(1)
-	jc <label>
+	jc @F
 	mov eax,1
-<label>:
+@@:
 	finit
 ------------------------------------------
 example: f1>f2
@@ -412,9 +423,9 @@ return 0 or 1 in eax
 	fld	f1
 	fld	f2
 	fcomi st(0),st(1)
-	jc <label>
+	jc @F
 	mov eax,1
-<label>:
+@@:
 	finit
 	not eax
 	and eax, 1
@@ -427,9 +438,9 @@ return 0 or 1 in eax
 	fld	f2
 	fld	f1
 	fcomi st(0),st(1)
-	jc <label>
+	jc @F
 	mov eax,1
-<label>:
+@@:
 	finit
 	not eax
 	and eax, 1
@@ -480,3 +491,4 @@ main endp
 
 end main
 ==========================================
+
