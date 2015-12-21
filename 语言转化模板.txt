@@ -1,0 +1,744 @@
+Boom Language Transform Template
+==========================================
+.data
+	numFmt db '%d',0
+	chaFmt db '%c',0
+	floFmt db '%f',0
+	spaFmt db ' ',0
+	FLOAT_TEMP dd 0
+
+==========================================
+;if condition
+
+?(<condition>){<contents>}!
+------------------------------------------
+;	push edi
+;
+;	<condition>	;put the result in %eax
+;
+;	mov  edi,0
+;	cmp  eax,edi
+;	jge  L<label>
+;
+;	<contents>
+;
+;L<label>:
+;	pop  edi
+;
+------------------------------------------
+
+	<condition>	;put the result in %eax
+	.IF eax
+	<contents>
+	.ENDIF
+
+==========================================
+;array data access
+
+<array>[<num>]
+------------------------------------------
+;	push ebx
+;	push esi
+;	mov  ebx,<array>
+;	mov  esi,<num>
+;	mov  eax, dword ptr [ebx + esi * 4]
+;
+;	pop  esi
+;	pop  ebx
+------------------------------------------
+	LOCAL <array>[<num>]:DWORD
+	...
+	<array>[4*<num>]
+	;when use
+------------------------------------------
+	LOCAL <floatarray>[<length>]:REAL8
+	...
+	<array>[8*<num>]
+==========================================
+;loop
+
+LOOP(<condition>){<contents>}!
+------------------------------------------
+;	push edi
+;L<label>:
+;	<condition>	;put the result in %eax
+;
+;	mov  edi,0
+;	cmp  eax,edi
+;	jge  E<label>	;if the condition is <=0 then do not loop
+;
+;	<contents>
+;
+;	jmp L<label>
+;E<label>:
+;	pop  edi
+------------------------------------------
+	<condition>
+	.WHILE eax
+	<contents>
+	<condition>
+	.ENDW
+------------------------------------------
+BOOM!
+
+.BREAK
+==========================================
+return
+
+RETURN <expression>!
+------------------------------------------
+	<expression>	;put the result in %eax
+	ret
+==========================================
+;function define
+
+DEF <name>(<type> <inut1>,<type> <input2>) AS <type> {<contents>}!
+------------------------------------------
+<name> proc <input1>,<input2>,<input3(float)>:REAL8	;if the parameter is float then should add more
+
+	<contents>
+
+    	ret
+<name> endp
+
+==========================================
+;function call
+
+<name>(<input1>,<input2>)!
+------------------------------------------
+	invoke <name>,<input1>,<input2>
+==========================================
+;static array
+
+DEF <name> AS NUM[<length>] {<num1>,<num2>,<num3>,...}!
+DEF <floatname> AS FLOAT[<floatlength>] {<floatnum1>,<floatnum2>,<floatnum3>,...}!
+------------------------------------------
+.data
+	<name> dd <num1>,<num2>,<num3>,...
+	;<<name>length> EQU $ -<name>
+	<name> dd <num1>,<num2>,<num3>,...
+	<floatname> REAL8 <floatnum1>,<floatnum2>,<floatnum3>...	
+.code
+------------------------------------------
+[warning] that <floatnum>nust be in the float fomat 
+e.g. 	1.0 cannot be written by 1
+	0.0 cannot be written by 0
+==========================================
+NOT <num>
+------------------------------------------
+not eax
+and eax, 1
+==========================================
+<num1>AND<num2>
+------------------------------------------
+and eax,ebx
+==========================================
+<num1>OR<num2>
+------------------------------------------
+or eax,ebx
+==========================================
+<num1>><num2>
+------------------------------------------
+	push ecx
+	push ebx
+	push <num2>
+	push <num1>
+	mov ebx,<num1>
+	mov ecx,<num2>
+	cmp ebx,ecx
+	mov eax,0
+	jle @F
+	mov eax,1
+@@:
+	pop ebx
+	pop ecx	
+==========================================
+<num1>>=<num2>
+------------------------------------------
+	push ecx
+	push ebx
+	mov ebx,<num1>
+	mov ecx,<num2>
+	cmp ebx,ecx
+	mov eax,0
+	jl @F
+	mov eax,1
+@@:
+	pop ebx
+	pop ecx	
+==========================================
+<num1><<num2>
+------------------------------------------
+	push ecx
+	push ebx
+	mov ebx,<num2>
+	mov ecx,<num1>
+	cmp ebx,ecx
+	mov eax,0
+	jle @F
+	mov eax,1
+@@:
+	pop ebx
+	pop ecx	
+==========================================
+<num1><=<num2>
+------------------------------------------
+	push ecx
+	push ebx
+	mov ebx,<num2>
+	mov ecx,<num1>
+	cmp ebx,ecx
+	mov eax,0
+	jl @F
+	mov eax,1
+@@:
+	pop ebx
+	pop ecx	
+==========================================
+<num1>=<num2>
+------------------------------------------
+	push ecx
+	push ebx
+	mov ebx,<num1>
+	mov ecx,<num2>
+	cmp ebx,ecx
+	mov eax,0
+	jne @F
+	mov eax,1
+@@:
+	pop ebx
+	pop ecx
+==========================================
+
+USING MRMOVL
+
+------------------------------------------
+
+	mov edi, 2
+	push edi
+	mov eax,dword ptr [esp]
+	pop edi
+
+result: eax 2
+==========================================
+;A simple testcase
+;it means that the result esp-ebp is -8 
+;ebp-8=esp
+
+e.g.
+|____|___<ebp  0x1000a
+|____|
+|____|___<esp  0x10004
+|____|
+
+so if you push something
+
+it becames:
+
+|____|___<ebp  0x1000a
+|____|			___<ebp-4
+|____|			___<ebp-8
+|_XX_|___<esp  0x10000	___<ebp-12
+
+------------------------------------------
+main proc
+	mov eax, 0
+	mov edi, 4
+	mov cl,4
+
+;the part for push
+
+	push edi
+	;push edi
+
+	mov eax,esp
+	sub eax,ebp
+
+	;mov eax,dword ptr [esp]
+	mov eax,dword ptr [ebp-12]
+
+;the part for pop
+
+	;pop edi
+	pop edi
+
+	invoke crt_printf, addr szFmt, eax
+	invoke crt_scanf
+    ret
+main endp
+
+end main
+==========================================
+About Print Functions
+------------------------------------------
+DEF a1 AS NUM!
+LET a1 AS ...!
+...
+PRINT(a1)!
+------------------------------------------
+invoke print_num,a1
+==========================================
+DEF f1 AS FLOAT!
+LET...!
+...
+PRINT(f1)
+------------------------------------------
+invoke print_flo,f1
+------------------------------------------
+[Warning] In this place f1 can only be the local variable with REAL4 REAL8... 
+==========================================
+DEF a1 AS CHAR!
+LET...!
+...
+PRINT(a1)!
+------------------------------------------
+invoke print_cha,a1
+==========================================
+print_space proc
+	invoke crt_printf, addr spaFmt
+	ret
+print_space endp
+
+print_num proc num
+	invoke crt_printf, addr numFmt, num
+	ret
+print_num endp
+
+print_cha proc char
+	invoke crt_printf, addr chaFmt, char
+	ret
+print_cha endp
+
+print_flo proc float
+	invoke crt_printf, addr floFmt, float
+	ret
+print_flo endp
+
+------------------------------------------
+About Print LINK TO THE LIBC printf
+
+PRINT("%d|",<NUM>)
+PRINT("<FORMAT>",<NUM>)
+
+------------------------------------------
+.data
+	<szFmt> db '<FORMAT>', 0
+
+.code
+	invoke crt_printf, addr <szFmt>, <NUM>
+
+==========================================
+ABOUT LOCAL VARIABLE
+
+------------------------------------------
+<name> proc
+	LOCAL var1:DWORD,var2:DWORD
+	LOCAL var3[4]:DWORD		;arrary
+	...
+<name> endp
+==========================================
+|					||
+|ABOUT FLOAT				||
+|					||
+==========================================
+Global Defination
+.data
+	m1 real8 1.0
+	m2 real4 2.0
+
+------------------------------------------
+using a stack to caculate
+
+fadd st(1), st 	; Add second position to first -
+		; result goes in second position
+fadd st, st(2) 	; Add first position to third -
+		; result goes in first position
+fxch st(1) 	; Exchange first and second positions
+------------------------------------------
+|___ST__|___< Stack Top
+|_st(1)_|
+|_st(2)_|
+|_st(3)_|
+------------------------------------------
+FADD 	Adds the source and destination
+FSUB 	Subtracts the source from the destination
+FSUBR	Subtracts the destination from the source
+FMUL 	Multiplies the source and the destination
+FDIV 	Divides the destination by the source
+FDIVR 	Divides the source by the destination
+
+FABS 	Sets the sign of ST to positive
+FCHS 	Reverses the sign of ST
+FRNDINT Rounds ST to an integer
+FSQRT 	Replaces the contents of ST with its square root
+FSCALE 	Multiplies the stack-top value by 2 to the power contained in ST(1)
+FPREM 	Calculates the remainder of ST divided by ST(1)
+------------------------------------------
+f1 <- f2
+------------------------------------------
+	finit
+	fld 	f2
+	fstp	f1
+------------------------------------------
+STEP1:
+Local Varable
+.data
+	m1 real8 1.0
+	m2 real8 2.0
+.code
+xxx proc
+	LOCAL f1:REAL8,f2:REAL8
+	finit			;init the float stack
+	fld 	m1
+	fstp	f1		;let f1=1.0
+	fld 	m2
+	fstp	f2		;let f2=2.0
+
+------------------------------------------
+STEP2:
+	fld	f5
+	fld	f4
+	fld	f3
+	fld	f2
+	fld	f1
+	;push the float variable in REVERSE order
+
+STEP3:
+	faddp	;add and pop (f1+f2)
+	faddp	;(f1+f2)+f3
+	fmulp	;((f1+f2)+f3)*f4
+	fsubp	;(f5-((f1+f2)+f3)*f4))
+
+	;caculate
+
+STEP4:
+	fstp f1
+	;get result
+
+------------------------------------------
+f1+f2
+------------------------------------------
+f_add proc f1:REAL8, f2:REAL8
+	finit
+	fld	f1
+	fld	f2
+	faddp	;add and pop (f1+f2)
+	fstp F_EAX
+	ret
+f_add endp
+------------------------------------------
+[USAGE]	invoke f_add,f1,f2
+==========================================
+f1-f2
+------------------------------------------
+f_sub proc f1:REAL8, f2:REAL8
+	finit
+	fld	f1
+	fld	f2
+	fsubp	;add and pop (f1-f2)
+	fstp F_EAX
+	ret
+f_sub endp
+------------------------------------------
+[USAGE]	invoke f_sub,f1,f2
+==========================================
+f1*f2
+------------------------------------------
+f_imul proc f1:REAL8, f2:REAL8
+	finit
+	fld	f1
+	fld	f2
+	fmulp	;add and pop (f1*f2)
+	fstp F_EAX
+	ret
+f_imul endp
+------------------------------------------
+[USAGE]	invoke f_mul,f1,f2
+==========================================
+f1/f2
+------------------------------------------
+f_idiv proc f1:REAL8, f2:REAL8
+	finit
+	fld	f1
+	fld	f2
+	fdivp	;add and pop (f1/f2)
+	fstp F_EAX
+	ret
+f_idiv endp
+------------------------------------------
+[USAGE]	invoke f_div,f1,f2
+==========================================
+About Float To NUM
+==========================================
+DEF f AS FLOAT
+DEF n AS NUM
+LET n AS f
+------------------------------------------
+.data
+	FLOAT_TEMP dd 0
+...
+.code
+...
+	LOCAL f:REAL8,n:DWORD
+...
+	push eax
+	finit
+	fld	f
+	fistp	FLOAT_TEMP
+	mov eax,FLOAT_TEMP
+	mov n,eax
+	pop eax
+...
+------------------------------------------
+float2num proc f:REAL8 
+	finit
+	fld	f
+	fistp	FLOAT_TEMP
+	mov eax,FLOAT_TEMP
+	ret
+float2num endp
+------------------------------------------
+[USAGE]: invoke float2num,f	;result is in eax
+==========================================
+About NUM To Float
+==========================================
+DEF f AS FLOAT
+DEF n AS NUM
+LET f AS n
+------------------------------------------
+.data
+	FLOAT_TEMP dd 0
+...
+.code
+...
+	LOCAL f:REAL8,n:DWORD
+...
+	push eax
+	mov eax,n
+	mov FLOAT_TEMP,eax
+	
+	finit
+	fild	FLOAT_TEMP
+	fstp	f
+	
+	pop eax
+...
+------------------------------------------
+num2float proc n
+	push eax
+	mov eax,n
+	mov FLOAT_TEMP,eax
+	
+	finit
+	fild	FLOAT_TEMP
+	fstp	F_EAX
+	pop eax
+	ret
+num2float endp
+------------------------------------------
+[USAGE]: invoke num2float,<NUM>	;result is in F_EAX
+------------------------------------------
+example: f1>=f2
+input local variable f1,f2
+return 0 or 1 in eax
+------------------------------------------
+	mov eax,0
+	fld	f2
+	fld	f1
+	fcomi st(0),st(1)
+	jc @F
+	mov eax,1
+@@:
+	finit
+------------------------------------------
+f_ge proc f1:REAL8, f2:REAL8
+	mov eax,0
+	fld	f2
+	fld	f1
+	fcomi st(0),st(1)
+	jc @F
+	mov eax,1
+@@:
+	finit
+	ret
+f_ge endp
+------------------------------------------
+[USAGE]: invoke f_ge,f1,f2
+------------------------------------------
+example: f1<=f2
+input local variable f1,f2
+return 0 or 1 in eax
+------------------------------------------
+	mov eax,0
+	fld	f1
+	fld	f2
+	fcomi st(0),st(1)
+	jc @F
+	mov eax,1
+@@:
+	finit
+------------------------------------------
+f_le proc f1:REAL8, f2:REAL8
+	mov eax,0
+	fld	f1
+	fld	f2
+	fcomi st(0),st(1)
+	jc @F
+	mov eax,1
+@@:
+	finit
+	ret
+f_le endp
+------------------------------------------
+[USAGE]: invoke f_le,f1,f2
+------------------------------------------
+example: f1>f2
+input local variable f1,f2
+return 0 or 1 in eax
+------------------------------------------
+	mov eax,0
+	fld	f1
+	fld	f2
+	fcomi st(0),st(1)
+	jc @F
+	mov eax,1
+@@:
+	finit
+	not eax
+	and eax, 1
+------------------------------------------
+f_g proc f1:REAL8, f2:REAL8
+	mov eax,0
+	fld	f1
+	fld	f2
+	fcomi st(0),st(1)
+	jc @F
+	mov eax,1
+@@:
+	finit
+	not eax
+	and eax, 1
+	ret
+f_g endp
+------------------------------------------
+[USAGE]: invoke f_g,f1,f2
+------------------------------------------
+example: f1<f2
+input local variable f1,f2
+return 0 or 1 in eax
+------------------------------------------
+	mov eax,0
+	fld	f2
+	fld	f1
+	fcomi st(0),st(1)
+	jc @F
+	mov eax,1
+@@:
+	finit
+	not eax
+	and eax, 1
+------------------------------------------
+f_l proc f1:REAL8, f2:REAL8
+	mov eax,0
+	fld	f2
+	fld	f1
+	fcomi st(0),st(1)
+	jc @F
+	mov eax,1
+@@:
+	finit
+	not eax
+	and eax, 1
+	ret
+f_l endp
+------------------------------------------
+[USAGE]: invoke f_l,f1,f2
+------------------------------------------
+example: f1=f2
+input local variable f1,f2
+return 0 or 1 in eax
+------------------------------------------
+	mov eax,0
+	fld	m1
+	fld	m2
+	fcomi st(0),st(1)
+	jz @F
+	mov eax,1
+@@:
+	finit
+	not eax
+	and eax, 1
+	invoke print_num,eax
+------------------------------------------
+f_equ proc f1:REAL8, f2:REAL8
+	LOCAL a:DWORD
+	mov eax,0
+	fld	f1
+	fld	f2
+	fcomi st(0),st(1)
+	jc @F
+	mov eax,1
+@@:
+	finit
+	mov a,eax
+	mov eax,0
+	fld	f2
+	fld	f1
+	fcomi st(0),st(1)
+	jc @F
+	mov eax,1
+@@:
+	finit
+	and eax,a
+	ret
+f_equ endp
+------------------------------------------
+[USAGE]: invoke f_equ,f1,f2
+==========================================
+TIPS:
+MASM in CMD
+------------------------------------------
+;ml /c /coff a.asm
+;link /subsystem:windows a.obj
+------------------------------------------
+.386 
+.model flat,stdcall 
+option casemap:none 
+
+include e:\masm32\include\windows.inc 
+include e:\masm32\include\user32.inc 
+includelib e:\masm32\lib\user32.lib 
+include e:\masm32\include\kernel32.inc 
+includelib e:\masm32\lib\kernel32.lib
+ 
+.data 
+szCaption db 'A MessageBox',0 
+szText db 'Hello!',0 
+ 
+.code 
+start: 
+  invoke MessageBox,NULL,offset szText,offset szCaption,MB_OK 
+  invoke ExitProcess,NULL 
+end start
+------------------------------------------
+ml /c /coff a.asm
+link /subsystem:console a.obj
+------------------------------------------
+.386 
+.model flat, stdcall
+
+include  e:\masm32\include\msvcrt.inc
+includelib e:\masm32\lib\msvcrt.lib
+.data
+	szFmt db 'HelloWorld -1:%d| ', 0
+.code
+main proc
+	mov eax,-1
+	invoke crt_printf, addr szFmt, eax
+	invoke crt_scanf
+    ret
+main endp
+
+end main
+==========================================
+
