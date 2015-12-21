@@ -1,0 +1,20 @@
+DEF fuse() AS NUM{
+	LET string AS CHAR[12]! 
+	LET string[0] AS 104!
+	LET string[1] AS 101!
+	LET string[2] AS 108!
+	LET string[3] AS 108!
+	LET string[4] AS 111!
+	LET string[5] AS 32!
+	LET string[6] AS 119!
+	LET string[7] AS 111!
+	LET string[8] AS 114!
+	LET string[9] AS 108!
+	LET string[10] AS 100!
+	LET string[11] AS 33!
+	DEF i AS NUM!
+	LET i AS 0!
+	LOOP(i<12){print_cha(string[i])! LET i AS i+1!}!
+	RET 0!
+}!
+@BOOM!
