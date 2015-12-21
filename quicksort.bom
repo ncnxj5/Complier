@@ -1,6 +1,6 @@
 #########################################################
-#		mblue5 2015/12/17			                              #
-#							                                          #
+#		mblue5 2015/12/17			#
+#							#
 #########################################################
 DEF array AS NUM[10] {34,65,12,43,67,5,78,10,3,70}!
 DEF len AS NUM!
@@ -24,13 +24,13 @@ DEF quicksort(NUM[] s,NUM l,NUM r) AS NUM{
 		quicksort(s, l, i - 1)!
 		quicksort(s, i + 1, r)!
 	}!
-	RETURN 0!
+	RET 0!
 }!
 
-DEF main() AS NUM{
+DEF fuse() AS NUM{
 	LET len AS 10!
 	quicksort(array,0,len-1)!
-	RETURN 0!
+	RET 0!
 }!
 
-BOOM!
+@BOOM!
