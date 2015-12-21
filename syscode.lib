@@ -1,0 +1,37 @@
+.code
+print_space proc
+	invoke crt_printf, addr spaFmt
+	ret
+print_space endp
+
+print_num proc num
+	invoke crt_printf, addr numFmt, num
+	ret
+print_num endp
+
+print_cha proc char
+	invoke crt_printf, addr chaFmt, char
+	ret
+print_cha endp
+
+print_flo proc float:REAL8
+	invoke crt_printf, addr floFmt, float
+	ret
+print_flo endp
+
+print proc arr, len
+	mov edi, arr								;把数组起始地址给一个寄存器
+    mov ecx, len								;把数组元素数(将要反复的次数)给 ECX
+    xor eax, eax
+ Lp:
+    mov  eax, [edi]								;edi 中的地址将不断变化, 通过 [edi] 获取元素值
+	push ecx
+	push edi
+	invoke crt_printf, addr szFmt, eax
+	pop edi
+	pop ecx
+    add  edi, type arr								;获取下一个元素的地址
+    loop Lp
+	;invoke crt_printf, addr entFmt
+	ret
+print endp
