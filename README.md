@@ -1,8 +1,9 @@
 #BOOM LANGUAGE
-@(Defined by )[Complier| @SJTU_SE|]
-**Entrance** : The function : fuse
-- **Def.** £º DEF fuse() AS NUM! { }! 
-- **Meaning**:  (µ¼»ðË÷)
+@(Defined by:|Aicitel|Ncnxj5|HaperJJ )[Complier| @SJTU_SE|]
+>**Entrance** : The function : fuse
+>- **Def.** £º DEF fuse() AS NUM! { }! 
+>- **Meaning**:  A fuse is a device on a bomb or firework which delays the explosion so that people can move a safe distance away
+
 
 
 **Demo:** : Eight Queen
@@ -85,3 +86,52 @@
 	3
 	...
 ```
+**MASM:** Microsoft MASM 6.1 Programmer's Guide 
+TIPS:MASM in CMD
+------------------------------------------
+>;ml /c /coff a.asm
+>;link /subsystem:windows a.obj
+``` python
+.386 .model flat,stdcall 
+option casemap:none 
+include e:\masm32\include\windows.inc 
+include e:\masm32\include\user32.inc 
+includelib e:\masm32\lib\user32.lib 
+include e:\masm32\include\kernel32.inc 
+includelib e:\masm32\lib\kernel32.lib 
+.data 
+szCaption db 'A MessageBox',0 
+szText db 'Hello!',0  
+.code 
+start:   
+	invoke MessageBox,NULL,offset szText,offset szCaption,MB_OK   
+	invoke ExitProcess,NULL 
+end start
+```
+
+>ml /c /coff a.asm
+>link /subsystem:console a.obj
+``` python
+.386 
+.model flat,stdcall
+include  e:\masm32\include\msvcrt.inc
+includelib e:\masm32\lib\msvcrt.lib
+
+.data 
+	szFmt db 'HelloWorld -1:%d| ', 0
+
+.code
+
+main proc 
+	mov eax,-1 
+	invoke crt_printf, addr szFmt, eax 
+	invoke crt_scanf    
+	ret
+main endp
+
+end main
+``` 
+
+## contrust
+- mail£ºncnxj5@163.com
+- github
