@@ -4,7 +4,17 @@
 #########################################################
 DEF array AS NUM[10]!
 DEF len AS NUM!
-
+DEF printa(NUM[] s,NUM len) AS NUM
+{
+	DEF i AS NUM!
+	LET i AS 0!
+	LOOP(i<len){
+		printnum(s[i])!
+		printspace()!
+		LET i AS i+1!
+	}!	
+	RET 0!
+}!
 DEF quicksort(NUM[] s,NUM l,NUM r) AS NUM{
 	?(l<r)
 	{
@@ -31,6 +41,7 @@ DEF fuse() AS NUM{
 	LET array AS {34,65,12,43,67,5,78,10,3,70}!
 	LET len AS 10!
 	quicksort(array,0,len-1)!
+	printa(array,10)!
 	RET 0!
 }!
 
