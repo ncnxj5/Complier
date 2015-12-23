@@ -2,7 +2,7 @@
 #		mblue5 2015/12/17			#
 #							#
 #########################################################
-DEF array AS NUM[10] {34,65,12,43,67,5,78,10,3,70}!
+DEF array AS NUM[10]!
 DEF len AS NUM!
 
 DEF quicksort(NUM[] s,NUM l,NUM r) AS NUM{
@@ -28,6 +28,7 @@ DEF quicksort(NUM[] s,NUM l,NUM r) AS NUM{
 }!
 
 DEF fuse() AS NUM{
+	LET array AS {34,65,12,43,67,5,78,10,3,70}!
 	LET len AS 10!
 	quicksort(array,0,len-1)!
 	RET 0!

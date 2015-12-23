@@ -1,5 +1,5 @@
 DEF fuse() AS NUM{
-	LET string AS CHAR[12]! 
+	DEF string AS CHARACTER[12]! 
 	LET string[0] AS 104!
 	LET string[1] AS 101!
 	LET string[2] AS 108!
@@ -14,7 +14,7 @@ DEF fuse() AS NUM{
 	LET string[11] AS 33!
 	DEF i AS NUM!
 	LET i AS 0!
-	LOOP(i<12){print_cha(string[i])! LET i AS i+1!}!
+	LOOP(i<12){printcha(string[i])! LET i AS i+1!}!
 	RET 0!
 }!
 @BOOM!
