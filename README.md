@@ -1,12 +1,74 @@
 #BOOM LANGUAGE
 @(Defined by:|Aicitel|Ncnxj5|HaperJJ )[Complier| @SJTU_SE|]
 >**Entrance** : The function : fuse
->- **Def.** £º DEF fuse() AS NUM! { }! 
->- **Meaning**:  A fuse is a device on a bomb or firework which delays the explosion so that people can move a safe distance away
+>- **Def.** 
+>>DEF fuse() AS NUM! { }! 
+>
+>- **Meaning:  **A fuse is a device on a bomb or firework which delays the explosion so that people can move a safe distance away  (¡£?`¦Ø¡ä?)
+****
+**MORE [USAGE]:**
+>**VARIABLE DEFINE** 
+>>**DEF |VARIABLE NAME| AS |TYPE| !**
+>>
+>>>DEF i AS NUM!
+>>
+>>>DEF f AS FLOAT!
+>>
+>>>DEF c  AS CHARACTER!
+
+>>**Meaning:  **
+****
+>**FUNCTION DEFINE** 
+>>**DEF |FUCTION NAME|    ( |PARAMETER| ) AS | FUNCTION TYPE |  {  |BODY|  }!**
+>>
+>>>DEF func() AS NUM{...}!
+
+>>**Meaning:  **
+>****
+>**FUNCTION CALL** 
+>>**|FUCTION NAME|( |PARAMETER| )!**
+>>
+>>>func(i,j)!
+
+>>**Meaning:  **
+****
+
+>**LET** 
+>>**LET |VARIABLE NAME|   AS  |VALUE|**
+>>
+>>>LET i AS 1!
+>>>
+>>>LET a AS func(1,2)!
+>>>
+>>>LET m AS 2*b!
+>>**Meaning:  **
+****
+>**IF** 
+>>**?( |CONDITION| ){ |BODY| }!**
+>>
+>>>?(   line[i]=j   ){   printcha(81)!   }!
+
+>>**Meaning:  **
+****
+>**LOOP** 
+>>**LOOP( |CONDITION| ){ |BODY| }!**
+>>
+>>>LOOP(a<n)  {  LET a AS a+1!   }!
+
+>>**Meaning:  **
+****
+
+>**BREAK** 
+>>**BOOM!**
+>>
+>>>LOOP(a<n)  {  LET a AS a+1! BOOM!  }!
+
+>>**Meaning:  **
+
+****
 
 
-
-**Demo:** : Eight Queen
+**Demo:**  Eight Queen
 ``` python
 	DEF line AS NUM[8]!
 	DEF answer AS NUM!
@@ -135,3 +197,4 @@ end main
 ## contrust
 - mail£ºncnxj5@163.com
 - github
+
