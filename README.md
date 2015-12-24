@@ -1,6 +1,7 @@
 #BOOM LANGUAGE
 @(Defined by:|Aicitel|Ncnxj5|HaperJJ )[Complier| @SJTU_SE|]
 >**Entrance** : The function : fuse
+<<<<<<< HEAD
 >- **Def.** 
 >>DEF fuse() AS NUM! { }! 
 >
@@ -15,6 +16,10 @@
 >>>DEF f AS FLOAT!
 >>
 >>>DEF c  AS CHARACTER!
+=======
+>- **Def.**   : DEF fuse() AS NUM! { }! 
+>- **Meaning**:  A fuse is a device on a bomb or firework which delays the explosion so that people can move a safe distance away
+>>>>>>> origin/master
 
 >>**Meaning:  **
 ****
@@ -173,6 +178,7 @@ end start
 
 >ml /c /coff a.asm
 >link /subsystem:console a.obj
+
 ``` python
 .386 
 .model flat,stdcall
@@ -195,6 +201,6 @@ end main
 ``` 
 
 ## contrust
-- mail£ºncnxj5@163.com
+- mailÂ£Âºncnxj5@163.com
 - github
 
