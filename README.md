@@ -5,9 +5,10 @@
 >- **Def.** 
 >>DEF fuse() AS NUM! { }! 
 >
->- **Meaning:  **A fuse is a device on a bomb or firework which delays the explosion so that people can move a safe distance away  (¡£?`¦Ø¡ä?)
+>- **Meaning:  **A fuse is a device on a bomb or firework which delays the explosion so that people can move a safe distance away
 ****
 **MORE [USAGE]:**
+
 >**VARIABLE DEFINE** 
 >>**DEF |VARIABLE NAME| AS |TYPE| !**
 >>
@@ -16,12 +17,6 @@
 >>>DEF f AS FLOAT!
 >>
 >>>DEF c  AS CHARACTER!
-=======
->- **Def.**   : DEF fuse() AS NUM! { }! 
->- **Meaning**:  A fuse is a device on a bomb or firework which delays the explosion so that people can move a safe distance away
->>>>>>> origin/master
-
->>**Meaning:  **
 ****
 >**FUNCTION DEFINE** 
 >>**DEF |FUCTION NAME|    ( |PARAMETER| ) AS | FUNCTION TYPE |  {  |BODY|  }!**
@@ -45,9 +40,11 @@
 >>>
 >>>LET a AS func(1,2)!
 >>>
->>>LET m AS 2*b!
+>>>LET m AS 2+b!
+
 >>**Meaning:  **
 ****
+
 >**IF** 
 >>**?( |CONDITION| ){ |BODY| }!**
 >>
@@ -55,6 +52,7 @@
 
 >>**Meaning:  **
 ****
+
 >**LOOP** 
 >>**LOOP( |CONDITION| ){ |BODY| }!**
 >>
@@ -201,6 +199,6 @@ end main
 ``` 
 
 ## contrust
-- mailÂ£Âºncnxj5@163.com
+- mailÃ‚Â£Ã‚Âºncnxj5@163.com
 - github
 
