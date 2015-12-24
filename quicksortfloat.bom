@@ -1,0 +1,56 @@
+#########################################################
+#		mblue5 2015/12/17			#
+#							#
+#########################################################
+DEF array AS FLOAT[128]!
+DEF len AS NUM!
+DEF printa(FLOAT[] s,NUM len) AS NUM
+{
+	DEF i AS NUM!
+	LET i AS 0!
+	LOOP(i<len){
+		printflo(s[i])!
+		printspace()!
+		LET i AS i+1!
+	}!	
+	RET 0!
+}!
+DEF quicksort(FLOAT[] s,NUM l,NUM r) AS NUM{
+	?(l<r)
+	{
+		DEF i AS NUM!
+		LET i AS l!
+		DEF j AS NUM!
+		LET j AS r!
+		DEF x AS FLOAT!
+		LET x AS s[l]!
+		LOOP(i<j){
+			LOOP(i<jANDs[j]>=x){LET j AS j-1!}!
+			?(i<j){LET s[i] AS s[j]! LET i AS i+1!}!
+			LOOP(i<jANDs[i]< x){LET i AS i+1!}!
+			?(i<j){LET s[j] AS s[i]! LET j AS j-1!}!
+		}!
+		LET s[i] AS x!
+		quicksort(s, l, i - 1)!
+		quicksort(s, i + 1, r)!
+	}!
+	RET 0!
+}!
+
+DEF fuse() AS NUM{
+	DEF i AS NUM!
+	LET i AS 0!
+	DEF j AS FLOAT!
+	LET len AS inputnum()!
+	LOOP(i<len)
+	{
+		LET j AS inputflo()!
+		LET array[i] AS j!
+		LET i AS i+1!
+	}!
+	quicksort(array,0,len-1)!
+	printa(array,len)!
+	RET 0!
+}!
+
+@BOOM!

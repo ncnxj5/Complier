@@ -1,0 +1,22 @@
+#########################################################
+#		mblue5 2015/12/24			#
+#							#
+#########################################################
+
+DEF fuse() AS NUM{
+	DEF i AS FLOAT!
+	LET i AS 2.3!
+	printflo(i)!
+	printcha(10)!
+	DEF j AS NUM!
+	LOOP(j<len)
+	{
+		LET i AS i*2.3!
+		printflo(i)!
+		printcha(10)!
+		LET j AS j+1!
+	}!
+	RET 0!
+}!
+
+@BOOM!
