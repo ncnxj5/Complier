@@ -18,6 +18,7 @@
 >>
 >>>DEF c  AS CHARACTER!
 ****
+
 >**FUNCTION DEFINE** 
 >>**DEF |FUCTION NAME|    ( |PARAMETER| ) AS | FUNCTION TYPE |  {  |BODY|  }!**
 >>
@@ -25,6 +26,7 @@
 
 >>**Meaning:  **
 >****
+
 >**FUNCTION CALL** 
 >>**|FUCTION NAME|( |PARAMETER| )!**
 >>
