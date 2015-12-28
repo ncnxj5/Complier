@@ -82,6 +82,15 @@ print proc arr, len
 	ret
 print endp
 
+bo_div proc des,sou
+	mov eax,des
+	push edx
+	mov edx,0
+	idiv sou
+	pop edx
+	ret
+bo_div endp
+
 f_add proc f1:REAL8, f2:REAL8
 	finit
 	fld	f1
@@ -216,154 +225,66 @@ f_EQUAL proc f1:REAL8, f2:REAL8
 f_EQUAL endp
 .data
      
-    line_0 DWORD 0
-    DWORD 0,0,0,0,0,0,0
+    _FLOAT2 REAL8 0.0
+    array_0 REAL8 0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+    REAL8 0.0,0.0,0.0,0.0,0.0,0.0,0.0
     _FLOAT1 REAL8 0.0
     _FLOAT0 REAL8 0.0
+    _NUM2 DWORD 0
     _NUM1 DWORD 0
-    answer_0 DWORD 0
     _NUM0 DWORD 0
+    len_0 DWORD 0
     .code
-        show proc 
+        printa proc s,len
     LOCAL i_1:DWORD
-    LOCAL j_1:DWORD
     mov esi,0
     mov i_1,esi
-    mov ebx,0
-    mov j_1,ebx
-    mov ecx,i_1
-    mov edx,8
-    push ecx
-    push ebx
-    push ecx
-    push edx
-    pop ebx
-    pop ecx
-    cmp ebx,ecx
-    mov eax,0
-    jle @F
-    mov eax,1
-    @@:
-    pop ebx
-    pop ecx
-    mov ecx,eax
-    mov eax,ecx
-    .WHILE eax>0
-    mov edi,j_1
-    mov esi,8
-    push ecx
-    push ebx
-    push edi
-    push esi
-    pop ebx
-    pop ecx
-    cmp ebx,ecx
-    mov eax,0
-    jle @F
-    mov eax,1
-    @@:
-    pop ebx
-    pop ecx
-    mov edi,eax
-    mov eax,edi
-    .WHILE eax>0
     mov ebx,i_1
-    mov ebx,line_0[ebx*4]
-    mov ecx,j_1
+    mov ecx,len
     push ecx
+    push esi
     push ebx
     push ecx
-    push ebx
-    pop ebx
+    pop esi
     pop ecx
-    cmp ebx,ecx
+    cmp esi,ecx
     mov eax,0
-    jne @F
+    jle @F
     mov eax,1
     @@:
-    pop ebx
+    pop esi
     pop ecx
     mov ebx,eax
     mov eax,ebx
-    .IF eax>0
-    mov edx,81
-    mov _NUM0,edx
-    invoke printcha,_NUM0
-    .ENDIF
-    mov edi,i_1
-    mov edi,line_0[edi*4]
-    mov esi,j_1
-    push ecx
-    push ebx
-    push esi
-    push edi
-    pop ebx
-    pop ecx
-    cmp ebx,ecx
-    mov eax,0
-    jle @F
-    mov eax,1
-    @@:
-    pop ebx
-    pop ecx
-    mov edi,eax
-    mov ebx,i_1
-    mov ebx,line_0[ebx*4]
-    mov ecx,j_1
-    push ecx
-    push ebx
-    push ebx
-    push ecx
-    pop ebx
-    pop ecx
-    cmp ebx,ecx
-    mov eax,0
-    jle @F
-    mov eax,1
-    @@:
-    pop ebx
-    pop ecx
-    mov ebx,eax
-    or edi,ebx
-    mov eax,edi
-    .IF eax>0
-    mov edx,42
-    mov _NUM0,edx
-    invoke printcha,_NUM0
-    .ENDIF
-    mov edi,j_1
-    mov esi,1
-    add edi,esi
-    mov j_1,edi
-    mov ebx,j_1
-    mov ecx,8
-    push ecx
-    push ebx
-    push ebx
-    push ecx
-    pop ebx
-    pop ecx
-    cmp ebx,ecx
-    mov eax,0
-    jle @F
-    mov eax,1
-    @@:
-    pop ebx
-    pop ecx
-    mov ebx,eax
-    mov eax,ebx
-    .ENDW
-    mov edx,0
-    mov j_1,edx
-    mov edi,10
-    mov _NUM0,edi
-    invoke printcha,_NUM0
+    .WHILE eax>0
+    mov edx,i_1
+    mov edi,s
+    finit
+    fld REAL8 ptr[edi+edx*8]
+    fstp f_esi
+    finit
+    fld f_esi
+    fstp _FLOAT0
+    invoke printflo,_FLOAT0
+    invoke printspace
     mov esi,i_1
     mov ebx,1
     add esi,ebx
     mov i_1,esi
     mov ecx,i_1
-    mov edx,8
+    mov edx,len
     push ecx
     push ebx
     push ecx
@@ -380,27 +301,16 @@ f_EQUAL endp
     mov ecx,eax
     mov eax,ecx
     .ENDW
-    mov edi,answer_0
-    mov esi,1
-    add edi,esi
-    mov answer_0,edi
-    mov ebx,answer_0
-    mov _NUM0,ebx
-    invoke printnum,_NUM0
-    mov ecx,10
-    mov _NUM0,ecx
-    invoke printcha,_NUM0
-    invoke inputcha
-    mov edx,0
-    mov eax,edx
-    ret
-    show endp
-        judge proc n
-    LOCAL i_6:DWORD
     mov edi,0
-    mov i_6,edi
-    mov esi,i_6
-    mov ebx,n
+    mov eax,edi
+    ret
+    printa endp
+        quicksort proc s,l,r
+    LOCAL x_4:REAL8
+    LOCAL j_4:DWORD
+    LOCAL i_4:DWORD
+    mov esi,l
+    mov ebx,r
     push ecx
     push ebx
     push esi
@@ -416,97 +326,43 @@ f_EQUAL endp
     pop ecx
     mov esi,eax
     mov eax,esi
+    .IF eax>0
+    mov ecx,l
+    mov i_4,ecx
+    mov edx,r
+    mov j_4,edx
+    mov edi,l
+    mov esi,s
+    finit
+    fld REAL8 ptr[esi+edi*8]
+    fstp f_ebx
+    finit
+    fld f_ebx
+    fstp x_4
+    mov ebx,i_4
+    mov ecx,j_4
+    push ecx
+    push ebx
+    push ebx
+    push ecx
+    pop ebx
+    pop ecx
+    cmp ebx,ecx
+    mov eax,0
+    jle @F
+    mov eax,1
+    @@:
+    pop ebx
+    pop ecx
+    mov ebx,eax
+    mov eax,ebx
     .WHILE eax>0
-    mov ecx,n
-    mov ecx,line_0[ecx*4]
-    mov edx,i_6
-    mov edx,line_0[edx*4]
+    mov edx,i_4
+    mov edi,j_4
     push ecx
     push ebx
     push edx
-    push ecx
-    pop ebx
-    pop ecx
-    cmp ebx,ecx
-    mov eax,0
-    jne @F
-    mov eax,1
-    @@:
-    pop ebx
-    pop ecx
-    mov ecx,eax
-    mov eax,ecx
-    .IF eax>0
-    mov edi,1
-    mov eax,edi
-    ret
-    .ENDIF
-    mov esi,n
-    mov esi,line_0[esi*4]
-    mov ebx,n
-    sub esi,ebx
-    mov ecx,i_6
-    mov ecx,line_0[ecx*4]
-    mov edx,i_6
-    sub ecx,edx
-    push ecx
-    push ebx
-    push ecx
-    push esi
-    pop ebx
-    pop ecx
-    cmp ebx,ecx
-    mov eax,0
-    jne @F
-    mov eax,1
-    @@:
-    pop ebx
-    pop ecx
-    mov esi,eax
-    mov eax,esi
-    .IF eax>0
-    mov edi,1
-    mov eax,edi
-    ret
-    .ENDIF
-    mov esi,n
-    mov esi,line_0[esi*4]
-    mov ebx,n
-    add esi,ebx
-    mov ecx,i_6
-    mov ecx,line_0[ecx*4]
-    mov edx,i_6
-    add ecx,edx
-    push ecx
-    push ebx
-    push ecx
-    push esi
-    pop ebx
-    pop ecx
-    cmp ebx,ecx
-    mov eax,0
-    jne @F
-    mov eax,1
-    @@:
-    pop ebx
-    pop ecx
-    mov esi,eax
-    mov eax,esi
-    .IF eax>0
-    mov edi,1
-    mov eax,edi
-    ret
-    .ENDIF
-    mov esi,i_6
-    mov ebx,1
-    add esi,ebx
-    mov i_6,esi
-    mov ecx,i_6
-    mov edx,n
-    push ecx
-    push ebx
-    push ecx
-    push edx
+    push edi
     pop ebx
     pop ecx
     cmp ebx,ecx
@@ -516,24 +372,55 @@ f_EQUAL endp
     @@:
     pop ebx
     pop ecx
+    mov edx,eax
+    mov esi,j_4
+    mov ebx,s
+    finit
+    fld REAL8 ptr[ebx+esi*8]
+    fstp f_ecx
+    finit
+    fld x_4
+    fstp f_edx
+    invoke f_BE,f_ecx,f_edx
     mov ecx,eax
-    mov eax,ecx
-    .ENDW
-    mov edi,0
+    and edx,ecx
+    mov eax,edx
+    .WHILE eax>0
+    mov ecx,j_4
+    mov edx,1
+    sub ecx,edx
+    mov j_4,ecx
+    mov edi,i_4
+    mov esi,j_4
+    push ecx
+    push ebx
+    push edi
+    push esi
+    pop ebx
+    pop ecx
+    cmp ebx,ecx
+    mov eax,0
+    jle @F
+    mov eax,1
+    @@:
+    pop ebx
+    pop ecx
+    mov edi,eax
+    mov ebx,j_4
+    mov ecx,s
+    finit
+    fld REAL8 ptr[ecx+ebx*8]
+    fstp f_edi
+    finit
+    fld x_4
+    fstp f_esi
+    invoke f_BE,f_edi,f_esi
+    mov edi,eax
+    and edi,edi
     mov eax,edi
-    ret
-    judge endp
-        control proc n
-    LOCAL k_11:DWORD
-    LOCAL temp_11:DWORD
-    mov esi,8
-    mov k_11,esi
-    mov ebx,0
-    mov ecx,n
-    mov line_0[ecx*4],ebx
-    mov edx,n
-    mov edx,line_0[edx*4]
-    mov edi,k_11
+    .ENDW
+    mov edx,i_4
+    mov edi,j_4
     push ecx
     push ebx
     push edx
@@ -549,23 +436,95 @@ f_EQUAL endp
     pop ecx
     mov edx,eax
     mov eax,edx
-    .WHILE eax>0
-    mov esi,n
-    mov _NUM0,esi
-    invoke judge,_NUM0
-    mov esi,eax
-    mov temp_11,esi
-    mov ebx,temp_11
-    mov ecx,0
+    .IF eax>0
+    mov esi,j_4
+    mov ebx,s
+    finit
+    fld REAL8 ptr[ebx+esi*8]
+    fstp f_ebx
+    mov ecx,i_4
+    mov edx,s
+    finit
+    fld f_ebx
+    fstp REAL8 ptr[edx+ecx*8]
+    mov edi,i_4
+    mov esi,1
+    add edi,esi
+    mov i_4,edi
+    .ENDIF
+    mov ebx,i_4
+    mov ecx,j_4
     push ecx
     push ebx
-    push ecx
     push ebx
+    push ecx
     pop ebx
     pop ecx
     cmp ebx,ecx
     mov eax,0
-    jne @F
+    jle @F
+    mov eax,1
+    @@:
+    pop ebx
+    pop ecx
+    mov ebx,eax
+    mov edx,i_4
+    mov edi,s
+    finit
+    fld REAL8 ptr[edi+edx*8]
+    fstp f_ecx
+    finit
+    fld x_4
+    fstp f_edx
+    invoke f_LESS,f_ecx,f_edx
+    mov ecx,eax
+    and ebx,ecx
+    mov eax,ebx
+    .WHILE eax>0
+    mov esi,i_4
+    mov ebx,1
+    add esi,ebx
+    mov i_4,esi
+    mov ecx,i_4
+    mov edx,j_4
+    push ecx
+    push ebx
+    push ecx
+    push edx
+    pop ebx
+    pop ecx
+    cmp ebx,ecx
+    mov eax,0
+    jle @F
+    mov eax,1
+    @@:
+    pop ebx
+    pop ecx
+    mov ecx,eax
+    mov edi,i_4
+    mov esi,s
+    finit
+    fld REAL8 ptr[esi+edi*8]
+    fstp f_edi
+    finit
+    fld x_4
+    fstp f_esi
+    invoke f_LESS,f_edi,f_esi
+    mov edi,eax
+    and ecx,edi
+    mov eax,ecx
+    .ENDW
+    mov ebx,i_4
+    mov ecx,j_4
+    push ecx
+    push ebx
+    push ebx
+    push ecx
+    pop ebx
+    pop ecx
+    cmp ebx,ecx
+    mov eax,0
+    jle @F
     mov eax,1
     @@:
     pop ebx
@@ -573,77 +532,23 @@ f_EQUAL endp
     mov ebx,eax
     mov eax,ebx
     .IF eax>0
-    mov edx,n
-    mov edi,7
-    push ecx
-    push ebx
-    push edi
-    push edx
-    pop ebx
-    pop ecx
-    cmp ebx,ecx
-    mov eax,0
-    jle @F
-    mov eax,1
-    @@:
-    pop ebx
-    pop ecx
-    mov edx,eax
-    mov esi,n
-    mov ebx,7
-    push ecx
-    push ebx
-    push esi
-    push ebx
-    pop ebx
-    pop ecx
-    cmp ebx,ecx
-    mov eax,0
-    jle @F
-    mov eax,1
-    @@:
-    pop ebx
-    pop ecx
-    mov esi,eax
-    or edx,esi
-    mov eax,edx
-    .IF eax>0
-    mov ecx,n
+    mov edx,i_4
+    mov edi,s
+    finit
+    fld REAL8 ptr[edi+edx*8]
+    fstp f_ebx
+    mov esi,j_4
+    mov ebx,s
+    finit
+    fld f_ebx
+    fstp REAL8 ptr[ebx+esi*8]
+    mov ecx,j_4
     mov edx,1
-    add ecx,edx
-    mov _NUM0,ecx
-    invoke control,_NUM0
+    sub ecx,edx
+    mov j_4,ecx
     .ENDIF
-    mov edi,n
-    mov esi,7
-    push ecx
-    push ebx
-    push esi
-    push edi
-    pop ebx
-    pop ecx
-    cmp ebx,ecx
-    mov eax,0
-    jne @F
-    mov eax,1
-    @@:
-    pop ebx
-    pop ecx
-    mov edi,eax
-    mov eax,edi
-    .IF eax>0
-    invoke show
-    .ENDIF
-    .ENDIF
-    mov ebx,n
-    mov ebx,line_0[ebx*4]
-    mov ecx,1
-    add ebx,ecx
-    mov edx,n
-    mov line_0[edx*4],ebx
-    mov edi,n
-    mov edi,line_0[edi*4]
-    mov esi,k_11
+    mov edi,i_4
+    mov esi,j_4
     push ecx
     push ebx
     push edi
@@ -660,16 +565,107 @@ f_EQUAL endp
     mov edi,eax
     mov eax,edi
     .ENDW
-    mov ebx,0
-    mov eax,ebx
+    finit
+    fld x_4
+    fstp f_ecx
+    mov ebx,i_4
+    mov ecx,s
+    finit
+    fld f_ecx
+    fstp REAL8 ptr[ecx+ebx*8]
+    mov edx,l
+    mov _NUM1,edx
+    mov edi,i_4
+    mov esi,1
+    sub edi,esi
+    mov _NUM2,edi
+    invoke quicksort,s,_NUM1,_NUM2
+    mov ebx,i_4
+    mov ecx,1
+    add ebx,ecx
+    mov _NUM1,ebx
+    mov edx,r
+    mov _NUM2,edx
+    invoke quicksort,s,_NUM1,_NUM2
+    .ENDIF
+    mov edi,0
+    mov eax,edi
     ret
-    control endp
+    quicksort endp
         fuse proc 
-    mov ecx,0
-    mov _NUM0,ecx
-    invoke control,_NUM0
+    LOCAL i_10:DWORD
+    LOCAL j_10:REAL8
+    mov esi,0
+    mov i_10,esi
+    invoke inputnum
+    mov ebx,eax
+    mov len_0,ebx
+    mov ebx,i_10
+    mov ecx,len_0
+    push ecx
+    push ebx
+    push ebx
+    push ecx
+    pop ebx
+    pop ecx
+    cmp ebx,ecx
+    mov eax,0
+    jle @F
+    mov eax,1
+    @@:
+    pop ebx
+    pop ecx
+    mov ebx,eax
+    mov eax,ebx
+    .WHILE eax>0
+    invoke inputflo
+    finit
+    fld f_eax
+    fstp f_edx
+    finit
+    fld f_edx
+    fstp j_10
+    finit
+    fld j_10
+    fstp f_edx
+    mov edx,i_10
+    finit
+    fld f_edx
+    fstp array_0[edx*8]
+    mov edi,i_10
+    mov esi,1
+    add edi,esi
+    mov i_10,edi
+    mov ebx,i_10
+    mov ecx,len_0
+    push ecx
+    push ebx
+    push ebx
+    push ecx
+    pop ebx
+    pop ecx
+    cmp ebx,ecx
+    mov eax,0
+    jle @F
+    mov eax,1
+    @@:
+    pop ebx
+    pop ecx
+    mov ebx,eax
+    mov eax,ebx
+    .ENDW
     mov edx,0
-    mov eax,edx
+    mov _NUM1,edx
+    mov edi,len_0
+    mov esi,1
+    sub edi,esi
+    mov _NUM2,edi
+    invoke quicksort,addr array_0,_NUM1,_NUM2
+    mov ebx,len_0
+    mov _NUM1,ebx
+    invoke printa,addr array_0,_NUM1
+    mov ecx,0
+    mov eax,ecx
     ret
     fuse endp
     main proc

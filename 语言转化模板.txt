@@ -336,6 +336,22 @@ ABOUT LOCAL VARIABLE
 	LOCAL var3[4]:DWORD		;arrary
 	...
 <name> endp
+
+==========================================
+DIV:
+	;div1/div2
+	invoke bo_div,div1,div2
+	; result is in eax
+------------------------------------------
+bo_div proc des,sou
+	mov eax,des
+	push edx
+	mov edx,0
+	idiv sou
+	pop edx
+	ret
+bo_div endp
+
 ==========================================
 |					||
 |ABOUT FLOAT				||
@@ -741,4 +757,12 @@ main endp
 
 end main
 ==========================================
+    array_0 DWORD	0,0,0,0,0,0,0,0
+	DWORD		0,0,0,0,0,0,0,0
+	DWORD		0,0,0,0,0,0,0,0
+	DWORD		0,0,0,0,0,0,0,0
+	DWORD		0,0,0,0,0,0,0,0
+	DWORD		0,0,0,0,0,0,0,0
+	DWORD		0,0,0,0,0,0,0,0
+	DWORD		0,0,0,0,0,0,0,0
 
